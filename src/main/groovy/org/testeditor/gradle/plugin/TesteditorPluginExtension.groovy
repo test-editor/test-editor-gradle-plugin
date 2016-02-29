@@ -10,13 +10,15 @@ class TesteditorPluginExtension {
     /** The version of the languages to use. */
     def String version = "1.0.0-SNAPSHOT" // TODO we don't want a default value
 
-    /** The version of AML to use, defaults to {@link #version}. */
-    def String amlVersion = version
+    /** The version of AML to use. */
+    def String amlVersion = null
 
-    /** The version of TCL to use, defaults to {@link #version}. */
-    def String tclVersion = version
+    /** The version of TCL to use. */
+    def String tclVersion = null
 
-    /** The version of TSL to use, defaults to {@link #version}. */
-    def String tslVersion = version
+    /** The version of TSL to use. */
+    def String tslVersion = null
+
+    def String xtextVersion = "2.9.1"
 
 }

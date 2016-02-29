@@ -2,6 +2,8 @@ package org.testeditor.gradle.plugin
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPlugin
+import org.xtext.gradle.XtendLanguagePlugin
 
 /**
  *
@@ -12,8 +14,10 @@ class TesteditorPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        // Register extension
-        project.extensions.create(TesteditorPluginExtension.NAME, TesteditorPluginExtension)
+        project.apply {
+            plugin(JavaPlugin)
+            plugin(TesteditorBasePlugin)
+        }
     }
 
 }

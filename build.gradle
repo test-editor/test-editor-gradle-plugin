@@ -69,3 +69,14 @@ pluginBundle {
         artifactId = 'gradle-plugin'
     }
 }
+
+task updateReadmeVersion << {
+    def versionPattern = /\d+.\d+(.\d+)?/
+    def encoding = 'UTF-8'
+    File file = new File("README.md")
+    String text = file.getText(encoding)
+    text = text.replaceAll("gradle-plugin' version '${versionPattern}'", "gradle-plugin' version '${project.version}'")
+    file.setText(text, encoding)
+}
+updateReadmeVersion.shouldRunAfter tasks.getByName('confirmReleaseVersion')
+tasks.getByName('preTagCommit').dependsOn updateReadmeVersion

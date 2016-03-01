@@ -3,7 +3,6 @@ package org.testeditor.gradle.plugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPlugin
-import org.xtext.gradle.XtendLanguagePlugin
 
 /**
  *

@@ -2,23 +2,15 @@ package org.testeditor.gradle.plugin
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.internal.plugins.DslObject
 import org.gradle.api.plugins.JavaBasePlugin
-import org.gradle.api.plugins.JavaPluginConvention
 import org.xtext.gradle.XtextBuilderPlugin
-import org.xtext.gradle.protocol.GradleInstallDebugInfoRequest
-import org.xtext.gradle.tasks.Language
 import org.xtext.gradle.tasks.XtextExtension
-import org.xtext.gradle.tasks.XtextGenerate
 
 class TesteditorBasePlugin implements Plugin<Project> {
 
     Project project
     XtextExtension xtext
     TesteditorPluginExtension config
-    Language aml
-    Language tcl
-    Language tsl
 
     @Override
     void apply(Project project) {
@@ -35,19 +27,20 @@ class TesteditorBasePlugin implements Plugin<Project> {
         xtext = project.extensions.getByType(XtextExtension)
 
         // Configure Xtext plugin
-        xtext.version = config.xtextVersion
-        aml = xtext.languages.create('aml') {
-            fileExtension = 'aml'
-            setup = 'org.testeditor.aml.dsl.AmlStandaloneSetup'
-        }
-        tcl = xtext.languages.create('tcl') {
-            fileExtension = 'tcl'
-            setup = 'org.testeditor.tcl.dsl.TclStandaloneSetup'
-            generator.outlet.producesJava = true
-        }
-        tsl = xtext.languages.create('tsl') {
-            fileExtension = 'tsl'
-            setup = 'org.testeditor.tsl.dsl.TslStandaloneSetup'
+        xtext.with {
+            version = config.xtextVersion
+            languages {
+                aml {
+                    setup = 'org.testeditor.aml.dsl.AmlStandaloneSetup'
+                }
+                tcl {
+                    setup = 'org.testeditor.tcl.dsl.TclStandaloneSetup'
+                    generator.outlet.producesJava = true
+                }
+                tsl {
+                    setup = 'org.testeditor.tsl.dsl.TslStandaloneSetup'
+                }
+            }
         }
 
         // Add dependencies
@@ -62,8 +55,12 @@ class TesteditorBasePlugin implements Plugin<Project> {
             project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.tcl.dsl:${tclVersion}")
             project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.tsl.model:${tslVersion}")
             project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.tsl.dsl:${tslVersion}")
+
             // TODO we use xtend.core for its JDT dependencies only
             project.dependencies.add('xtextLanguages', "org.eclipse.xtend:org.eclipse.xtend.core:${xtext.version}")
+
+            // TODO check if we can already resolve org.junit.*
+            project.dependencies.add('testCompile', 'junit:junit:4.12')
         }
     }
 

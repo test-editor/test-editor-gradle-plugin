@@ -19,8 +19,8 @@ abstract class AbstractIntegrationTest extends IntegrationSpec {
             apply plugin: ${TesteditorPlugin.name}
 
             repositories {
-                mavenLocal()
                 jcenter()
+                maven { url "http://dl.bintray.com/test-editor/test-dsls" }
             }
         """.stripIndent()
     }

@@ -5,7 +5,6 @@ import spock.lang.Ignore
 /**
  * Integration tests for {@link TesteditorPlugin}.
  */
-@Ignore("does not work on travis until we release aml/tcl/tsl.")
 class TesteditorPluginIntegrationTest extends AbstractIntegrationTest {
 
     def "can generate empty test case"() {

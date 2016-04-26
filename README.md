@@ -15,3 +15,17 @@ A minimal `build.gradle` looks like this:
 	repositories {
 		jcenter()
 	}
+	
+The version of the test-editor can be configured as follows:
+
+	testeditor {
+	    version '1.0.0'
+	}
+
+You can also configure the versions of the languages individually:
+
+	testeditor {
+		amlVersion '1.0.0'
+		tclVersion '1.0.0'
+		tslVersion '1.0.0'
+	}

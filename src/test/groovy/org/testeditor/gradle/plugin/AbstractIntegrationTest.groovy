@@ -20,7 +20,7 @@ abstract class AbstractIntegrationTest extends IntegrationSpec {
 
             repositories {
                 jcenter()
-                maven { url "http://dl.bintray.com/test-editor/test-dsls" }
+                maven { url "http://dl.bintray.com/test-editor/test-editor-maven" }
             }
         """.stripIndent()
     }

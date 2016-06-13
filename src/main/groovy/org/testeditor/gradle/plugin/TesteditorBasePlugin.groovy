@@ -49,10 +49,12 @@ class TesteditorBasePlugin implements Plugin<Project> {
         // Add dependencies
         // TODO we could improve this by not using the common xtextLanguages
         project.afterEvaluate {
-            def amlVersion = project.testeditor.amlVersion ?: project.testeditor.version
-            def tmlVersion = project.testeditor.tmlVersion ?: project.testeditor.version
-            def tclVersion = project.testeditor.tclVersion ?: project.testeditor.version
-            def tslVersion = project.testeditor.tslVersion ?: project.testeditor.version
+            def testEditorVersion = project.testeditor.version
+            def amlVersion = project.testeditor.amlVersion ?: testEditorVersion
+            def tmlVersion = project.testeditor.tmlVersion ?: testEditorVersion
+            def tclVersion = project.testeditor.tclVersion ?: testEditorVersion
+            def tslVersion = project.testeditor.tslVersion ?: testEditorVersion
+            project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.dsl.common:${testEditorVersion}")
             project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.aml.model:${amlVersion}")
             project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.aml.dsl:${amlVersion}")
             project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.tml.model:${tmlVersion}")

@@ -16,6 +16,9 @@ class TesteditorPluginExtension {
     /** The version of TCL to use. */
     def String tclVersion = null
 
+    /** The version of TML to use. */
+    def String tmlVersion = null
+
     /** The version of TSL to use. */
     def String tslVersion = null
 

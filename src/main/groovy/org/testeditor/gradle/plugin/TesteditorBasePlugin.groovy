@@ -33,6 +33,9 @@ class TesteditorBasePlugin implements Plugin<Project> {
                 aml {
                     setup = 'org.testeditor.aml.dsl.AmlStandaloneSetup'
                 }
+                tml {
+                    setup = 'org.testeditor.tml.dsl.TmlStandaloneSetup'
+                }
                 tcl {
                     setup = 'org.testeditor.tcl.dsl.TclStandaloneSetup'
                     generator.outlet.producesJava = true
@@ -47,10 +50,13 @@ class TesteditorBasePlugin implements Plugin<Project> {
         // TODO we could improve this by not using the common xtextLanguages
         project.afterEvaluate {
             def amlVersion = project.testeditor.amlVersion ?: project.testeditor.version
+            def tmlVersion = project.testeditor.tmlVersion ?: project.testeditor.version
             def tclVersion = project.testeditor.tclVersion ?: project.testeditor.version
             def tslVersion = project.testeditor.tslVersion ?: project.testeditor.version
             project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.aml.model:${amlVersion}")
             project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.aml.dsl:${amlVersion}")
+            project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.tml.model:${tmlVersion}")
+            project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.tml.dsl:${tmlVersion}")
             project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.tcl.model:${tclVersion}")
             project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.tcl.dsl:${tclVersion}")
             project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.tsl.model:${tslVersion}")

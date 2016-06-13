@@ -26,6 +26,7 @@ You can also configure the versions of the languages individually:
 
 	testeditor {
 		amlVersion '1.0.0'
+		tmlVersion '1.0.0'
 		tclVersion '1.0.0'
 		tslVersion '1.0.0'
 	}

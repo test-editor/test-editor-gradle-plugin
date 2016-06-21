@@ -14,6 +14,7 @@ A minimal `build.gradle` looks like this:
 	
 	repositories {
 		jcenter()
+		maven { url "http://dl.bintray.com/test-editor/test-editor-maven" }
 	}
 	
 The version of the test-editor can be configured as follows:

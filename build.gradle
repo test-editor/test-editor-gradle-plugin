@@ -1,6 +1,6 @@
 plugins {
-    id 'com.gradle.plugin-publish' version '0.9.3'
-    id 'net.researchgate.release' version '2.3.5'
+    id 'com.gradle.plugin-publish' version '0.9.5'
+    id 'net.researchgate.release' version '2.4.0'
     id 'java-gradle-plugin'
     id 'groovy'
     id 'maven'
@@ -46,8 +46,9 @@ jacocoTestReport {
 check.dependsOn jacocoTestReport
 
 release {
-    preTagCommitMessage = '[release] '
-    tagCommitMessage = '[release] '
+    preTagCommitMessage = '[release] pre tag commit: '
+    tagCommitMessage = '[release] creating tag: '
+    newVersionCommitMessage = '[release] new version commit: '
     tagTemplate = 'v${version}'
 }
 

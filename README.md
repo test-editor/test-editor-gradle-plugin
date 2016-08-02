@@ -20,14 +20,14 @@ A minimal `build.gradle` looks like this:
 The version of the test-editor can be configured as follows:
 
 	testeditor {
-	    version '1.0.0'
+	    version '1.1.0'
 	}
 
 You can also configure the versions of the languages individually:
 
 	testeditor {
-		amlVersion '1.0.0'
-		tmlVersion '1.0.0'
-		tclVersion '1.0.0'
-		tslVersion '1.0.0'
+		amlVersion '1.1.0'
+		tmlVersion '1.1.0'
+		tclVersion '1.1.0'
+		tslVersion '1.1.0'
 	}

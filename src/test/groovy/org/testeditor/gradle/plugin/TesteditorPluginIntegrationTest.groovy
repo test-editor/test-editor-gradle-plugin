@@ -38,6 +38,19 @@ class TesteditorPluginIntegrationTest extends AbstractIntegrationTest {
         suite.@errors == "0"
     }
 
+    def "gradle clean removes generated artifact"() {
+        given:
+        createTclSource()
+        runTasksSuccessfully("generateTestXtext")
+        assert new File(projectDir, "build/tcl/test/com/example/Example.java").exists()
+
+        when:
+        runTasksSuccessfully("clean")
+
+        then:
+        !new File(projectDir, "build/tcl/test/com/example/Example.java").exists()
+    }
+
     private void createTclSource() {
         def file = createFile("src/test/java/com/example/Example.tcl")
         file << """

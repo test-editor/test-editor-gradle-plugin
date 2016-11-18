@@ -26,50 +26,80 @@ class TesteditorBasePlugin implements Plugin<Project> {
         config = project.extensions.create(TesteditorPluginExtension.NAME, TesteditorPluginExtension)
         xtext = project.extensions.getByType(XtextExtension)
 
-        // Configure Xtext plugin
+        configureXtextPlugin()
+
+        project.afterEvaluate {
+            addDependencies()
+        }
+    }
+
+    private def void configureXtextPlugin() {
         xtext.with {
             version = config.xtextVersion
             languages {
                 aml {
                     setup = 'org.testeditor.aml.dsl.AmlStandaloneSetup'
                 }
-                tml {
-                    setup = 'org.testeditor.tml.dsl.TmlStandaloneSetup'
+                tsl {
+                    setup = 'org.testeditor.tsl.dsl.TslStandaloneSetup'
                 }
                 tcl {
                     setup = 'org.testeditor.tcl.dsl.TclStandaloneSetup'
                     generator.outlet.producesJava = true
                 }
-                tsl {
-                    setup = 'org.testeditor.tsl.dsl.TslStandaloneSetup'
+                if (isVersionSmaller_1_2_0(config.version)) {
+                    // required prior to 1.2.0 - TML was unified with TCL in 1.2.0
+                    tml {
+                        setup = 'org.testeditor.tml.dsl.TmlStandaloneSetup'
+                    }
                 }
             }
         }
+    }
 
-        // Add dependencies
-        // TODO we could improve this by not using the common xtextLanguages
-        project.afterEvaluate {
-            def testEditorVersion = project.testeditor.version
-            def amlVersion = project.testeditor.amlVersion ?: testEditorVersion
-            def tmlVersion = project.testeditor.tmlVersion ?: testEditorVersion
-            def tclVersion = project.testeditor.tclVersion ?: testEditorVersion
-            def tslVersion = project.testeditor.tslVersion ?: testEditorVersion
-            project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.dsl.common:${testEditorVersion}")
-            project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.aml.model:${amlVersion}")
-            project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.aml.dsl:${amlVersion}")
-            project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.tml.model:${tmlVersion}")
-            project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.tml.dsl:${tmlVersion}")
-            project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.tcl.model:${tclVersion}")
-            project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.tcl.dsl:${tclVersion}")
-            project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.tsl.model:${tslVersion}")
-            project.dependencies.add('xtextLanguages', "org.testeditor:org.testeditor.tsl.dsl:${tslVersion}")
+    private def void addDependencies() {
+        def testEditorVersion = project.testeditor.version
+        project.dependencies.with {
+            if (isVersionGreaterOrEquals_1_2_0(testEditorVersion)) {
+                // required since 1.2.0
+                add('xtextLanguages', "org.apache.commons:commons-lang3:3.4")
+                add('xtextLanguages', "org.gradle:gradle-tooling-api:2.14.1")
+                add('xtextLanguages', "org.testeditor:org.testeditor.dsl.common.model:$testEditorVersion")
+            }
+            if (isVersionSmaller_1_2_0(testEditorVersion)) {
+                // required prior to 1.2.0 - TML was unified with TCL in 1.2.0
+                add('xtextLanguages', "org.testeditor:org.testeditor.tml.model:$testEditorVersion")
+                add('xtextLanguages', "org.testeditor:org.testeditor.tml.dsl:$testEditorVersion")
+            }
+            // required for all versions
+            add('xtextLanguages', "org.testeditor:org.testeditor.dsl.common:$testEditorVersion")
+            add('xtextLanguages', "org.testeditor:org.testeditor.aml.model:$testEditorVersion")
+            add('xtextLanguages', "org.testeditor:org.testeditor.aml.dsl:$testEditorVersion")
+            add('xtextLanguages', "org.testeditor:org.testeditor.tsl.model:$testEditorVersion")
+            add('xtextLanguages', "org.testeditor:org.testeditor.tsl.dsl:$testEditorVersion")
+            add('xtextLanguages', "org.testeditor:org.testeditor.tcl.model:$testEditorVersion")
+            add('xtextLanguages', "org.testeditor:org.testeditor.tcl.dsl:$testEditorVersion")
 
             // TODO we use xtend.core for its JDT dependencies only
-            project.dependencies.add('xtextLanguages', "org.eclipse.xtend:org.eclipse.xtend.core:${xtext.version}")
+            add('xtextLanguages', "org.eclipse.xtend:org.eclipse.xtend.core:${xtext.version}")
 
             // TODO check if we can already resolve org.junit.*
-            project.dependencies.add('testCompile', 'junit:junit:4.12')
+            add('testCompile', 'junit:junit:4.12')
         }
+    }
+
+    private def boolean isVersionGreaterOrEquals_1_2_0(String testEditorVersion) {
+        String[] versionSplit = testEditorVersion.split("\\.")
+        int major = Integer.parseInt(versionSplit[0])
+        int minor = Integer.parseInt(versionSplit[1])
+        return (major == 1 && minor >= 2) || major > 1
+    }
+
+    private def boolean isVersionSmaller_1_2_0(String testEditorVersion) {
+        String[] versionSplit = testEditorVersion.split("\\.")
+        int major = Integer.parseInt(versionSplit[0])
+        int minor = Integer.parseInt(versionSplit[1])
+        return major == 1 && minor < 2
     }
 
 }

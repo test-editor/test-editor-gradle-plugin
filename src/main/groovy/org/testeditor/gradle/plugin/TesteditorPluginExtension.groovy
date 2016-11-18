@@ -8,20 +8,8 @@ class TesteditorPluginExtension {
     static final String NAME = "testeditor"
 
     /** The version of the languages to use. */
-    def String version = "1.1.0" // TODO we don't want a default value
+    def String version = "1.2.0" // TODO we don't want a default value
 
-    /** The version of AML to use. */
-    def String amlVersion = null
-
-    /** The version of TCL to use. */
-    def String tclVersion = null
-
-    /** The version of TML to use. */
-    def String tmlVersion = null
-
-    /** The version of TSL to use. */
-    def String tslVersion = null
-
-    def String xtextVersion = "2.9.1"
+    def String xtextVersion = "2.10.0"
 
 }

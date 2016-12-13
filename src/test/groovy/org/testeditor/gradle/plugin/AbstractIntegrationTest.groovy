@@ -20,7 +20,11 @@ abstract class AbstractIntegrationTest extends IntegrationSpec {
 
             repositories {
                 jcenter()
-                maven { url "http://dl.bintray.com/test-editor/test-editor-maven" }
+                maven { url "http://dl.bintray.com/test-editor/maven" }
+            }
+
+            dependencies {
+                testCompile 'org.testeditor.fixture:core-fixture:3.1.0'
             }
         """.stripIndent()
     }

@@ -22,3 +22,13 @@ The version of the test-editor can be configured as follows:
 	testeditor {
 	    version '1.2.0'
 	}
+	
+# Development
+
+## Release process
+
+Checkout the master branch and type
+
+	gradlew release -Prelease.useAutomaticVersion=true
+
+The release plugin will check that you don't have incoming or uncommitted changes, build the plugin and tag the current version accordingly. Travis will then pick up the version tag and publish the plugin.

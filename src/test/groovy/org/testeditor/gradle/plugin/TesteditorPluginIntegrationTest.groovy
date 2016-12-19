@@ -9,18 +9,18 @@ class TesteditorPluginIntegrationTest extends AbstractIntegrationTest {
 
     def "can generate empty test case"() {
         given:
-        createTclSource()
+        createTestCase()
 
         when:
         runTasksSuccessfully("generateTestXtext")
 
         then:
-        new File(projectDir, "build/tcl/test/com/example/Example.java").exists()
+        getGeneratedFile("Example").exists()
     }
 
     def "can run empty test case"() {
         given:
-        createTclSource()
+        createTestCase()
 
         when:
         runTasksSuccessfully("build")
@@ -38,25 +38,90 @@ class TesteditorPluginIntegrationTest extends AbstractIntegrationTest {
         suite.@errors == "0"
     }
 
+    def "can generate test case with macro"() {
+        given:
+        createMacroCollection("""
+            ## SampleMacro
+            template = "Nothing"
+        """)
+        createTestCase("""
+            * step one
+                Macro: MyMacroCollection
+                - Nothing
+        """)
+
+        when:
+        runTasksSuccessfully("generateTestXtext")
+
+        then:
+        def generatedFile = getGeneratedFile("Example")
+        generatedFile.exists()
+        generatedFile.text.contains("macro_MyMacroCollection_SampleMacro();")
+    }
+
+    def "can generate test case with configuration"() {
+        given:
+        createTestConfiguration()
+        createTestCase("""
+            config MyConfig
+        """)
+
+        when:
+        runTasksSuccessfully("generateTestXtext")
+
+        then:
+        def generatedFile = getGeneratedFile("Example")
+        generatedFile.exists()
+        generatedFile.text.contains("public class Example extends MyConfig {")
+    }
+
     def "gradle clean removes generated artifact"() {
         given:
-        createTclSource()
+        createTestCase()
         runTasksSuccessfully("generateTestXtext")
-        assert new File(projectDir, "build/tcl/test/com/example/Example.java").exists()
+        assert getGeneratedFile("Example").exists()
 
         when:
         runTasksSuccessfully("clean")
 
         then:
-        !new File(projectDir, "build/tcl/test/com/example/Example.java").exists()
+        !getGeneratedFile("Example").exists()
     }
 
-    private void createTclSource() {
+    private File getGeneratedFile(String tclName) {
+        return new File(projectDir, "build/tclMacro/test/com/example/${tclName}.java")
+    }
+
+    private void createTestCase(String contents = "") {
         def file = createFile("src/test/java/com/example/Example.tcl")
         file << """
             package com.example
 
             # Example
+
+            $contents
+        """.stripIndent()
+    }
+
+    private void createMacroCollection(String contents = "") {
+        def file = createFile("src/test/java/com/example/MyMacroCollection.tml")
+        file << """
+            package com.example
+
+            # MyMacroCollection
+
+            $contents
+        """.stripIndent()
+    }
+
+    private void createTestConfiguration(String contents = "") {
+        def file = createFile("src/test/java/com/example/MyConfig.config")
+        file << """
+            package com.example
+
+            config MyConfig
+
+            $contents
         """.stripIndent()
     }
 

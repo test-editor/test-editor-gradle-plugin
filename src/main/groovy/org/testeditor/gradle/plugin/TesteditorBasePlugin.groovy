@@ -43,14 +43,29 @@ class TesteditorBasePlugin implements Plugin<Project> {
                 tsl {
                     setup = 'org.testeditor.tsl.dsl.TslStandaloneSetup'
                 }
+
                 tcl {
+                    fileExtension = 'tcl'
                     setup = 'org.testeditor.tcl.dsl.TclStandaloneSetup'
                     generator.outlet.producesJava = true
                 }
+
                 if (isVersionSmaller_1_2_0(config.version)) {
                     // required prior to 1.2.0 - TML was unified with TCL in 1.2.0
                     tml {
                         setup = 'org.testeditor.tml.dsl.TmlStandaloneSetup'
+                    }
+                } else {
+                    // TODO this is quite ugly, need this until https://github.com/xtext/xtext-gradle-plugin/issues/71 is resolved
+                    tclMacro {
+                        fileExtension = 'tml'
+                        setup = 'org.testeditor.tcl.dsl.TclStandaloneSetup'
+                        generator.outlet.producesJava = true
+                    }
+                    tclConfig {
+                        fileExtension = 'config'
+                        setup = 'org.testeditor.tcl.dsl.TclStandaloneSetup'
+                        generator.outlet.producesJava = true
                     }
                 }
             }

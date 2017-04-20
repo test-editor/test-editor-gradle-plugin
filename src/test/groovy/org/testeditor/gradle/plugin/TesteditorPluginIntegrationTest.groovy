@@ -7,6 +7,19 @@ import spock.lang.Ignore
  */
 class TesteditorPluginIntegrationTest extends AbstractIntegrationTest {
 
+    def "output of source set runs successfully"() {
+        given:
+        createTestCase()
+
+        when:
+        runTasksSuccessfully("printSourceSets")
+
+        then: "source sets or printed"
+        def capturedOutput = getStandardOutput()
+        capturedOutput.find("sourceSet: '.*src/main/java'")
+        capturedOutput.find("sourceSet: '.*src/test/java'")
+    }
+
     def "can generate empty test case"() {
         given:
         createTestCase()

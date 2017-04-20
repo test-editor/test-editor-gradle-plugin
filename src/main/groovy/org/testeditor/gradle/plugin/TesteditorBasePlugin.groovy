@@ -31,6 +31,14 @@ class TesteditorBasePlugin implements Plugin<Project> {
         project.afterEvaluate {
             addDependencies()
         }
+
+        project.task("printSourceSets", {
+            doLast({
+                project.sourceSets.each({
+                    it.allJava.getSourceDirectories().each({
+                        println("sourceSet: '"+it.getPath()+"'") }) })
+            })
+        })
     }
 
     private def void configureXtextPlugin() {

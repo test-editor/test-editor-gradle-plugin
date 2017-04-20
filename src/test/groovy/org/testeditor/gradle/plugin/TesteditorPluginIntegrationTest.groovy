@@ -7,6 +7,19 @@ import spock.lang.Ignore
  */
 class TesteditorPluginIntegrationTest extends AbstractIntegrationTest {
 
+    def "output of source set runs successfully"() {
+        given:
+        createTestCase()
+
+        when:
+        runTasksSuccessfully("sourceSetPaths")
+
+        then: "source sets or printed"
+        def capturedOutput = getStandardOutput()
+        capturedOutput.find("sourceSetPath: '.*src/main/java'")
+        capturedOutput.find("sourceSetPath: '.*src/test/java'")
+    }
+
     def "can generate empty test case"() {
         given:
         createTestCase()
@@ -29,7 +42,7 @@ class TesteditorPluginIntegrationTest extends AbstractIntegrationTest {
         new File(projectDir, "build/classes/test/com/example/Example.class").exists()
 
         and: "test got executed"
-        def testResult = new File(projectDir, "build/test-results/TEST-com.example.Example.xml")
+        def testResult = new File(projectDir, "build/test-results/test/TEST-com.example.Example.xml")
         def suite = new XmlSlurper().parse(testResult)
         suite.@name == "com.example.Example"
         suite.@tests == "1"

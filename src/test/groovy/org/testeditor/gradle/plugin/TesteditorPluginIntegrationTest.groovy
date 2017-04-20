@@ -29,7 +29,7 @@ class TesteditorPluginIntegrationTest extends AbstractIntegrationTest {
         new File(projectDir, "build/classes/test/com/example/Example.class").exists()
 
         and: "test got executed"
-        def testResult = new File(projectDir, "build/test-results/TEST-com.example.Example.xml")
+        def testResult = new File(projectDir, "build/test-results/test/TEST-com.example.Example.xml")
         def suite = new XmlSlurper().parse(testResult)
         suite.@name == "com.example.Example"
         suite.@tests == "1"

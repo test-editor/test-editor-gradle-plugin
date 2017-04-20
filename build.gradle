@@ -21,7 +21,7 @@ dependencies {
     compile 'org.xtext:xtext-gradle-plugin:1.0.14'
     testCompile 'junit:junit:4.12'
     testCompile 'org.apache.commons:commons-lang3:3.4'
-    testCompile 'com.netflix.nebula:nebula-test:4.2.2'
+    testCompile 'com.netflix.nebula:nebula-test:6.0.1'
     testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }

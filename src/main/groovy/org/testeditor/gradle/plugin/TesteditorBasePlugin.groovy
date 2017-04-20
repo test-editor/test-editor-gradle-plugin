@@ -32,15 +32,13 @@ class TesteditorBasePlugin implements Plugin<Project> {
             addDependencies()
         }
 
-        project.task("sourceSetPaths",
-            description: "Displays all java source set paths",
-            group: "Help",{
-            doLast({
-                project.sourceSets.each({
-                    it.allJava.getSourceDirectories().each({
-                        println("sourceSetPath: '"+it.getPath()+"'") }) })
-            })
-        })
+        createSourceSetPathsTask(project)
+    }
+
+    private def void createSourceSetPathsTask(Project target) {
+        SourceSetPathsTask sourceSetPathsTask = target.getTasks().create("sourceSetPaths", SourceSetPathsTask.class);
+        sourceSetPathsTask.setDescription("Displays all java source set paths");
+        sourceSetPathsTask.setGroup("Help");
     }
 
     private def void configureXtextPlugin() {

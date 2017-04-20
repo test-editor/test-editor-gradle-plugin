@@ -32,11 +32,13 @@ class TesteditorBasePlugin implements Plugin<Project> {
             addDependencies()
         }
 
-        project.task("printSourceSets", {
+        project.task("sourceSetPaths",
+            description: "Displays all java source set paths",
+            group: "Help",{
             doLast({
                 project.sourceSets.each({
                     it.allJava.getSourceDirectories().each({
-                        println("sourceSet: '"+it.getPath()+"'") }) })
+                        println("sourceSetPath: '"+it.getPath()+"'") }) })
             })
         })
     }

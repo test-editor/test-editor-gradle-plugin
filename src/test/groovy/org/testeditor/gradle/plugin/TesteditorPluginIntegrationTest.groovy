@@ -12,12 +12,12 @@ class TesteditorPluginIntegrationTest extends AbstractIntegrationTest {
         createTestCase()
 
         when:
-        runTasksSuccessfully("printSourceSets")
+        runTasksSuccessfully("sourceSetPaths")
 
         then: "source sets or printed"
         def capturedOutput = getStandardOutput()
-        capturedOutput.find("sourceSet: '.*src/main/java'")
-        capturedOutput.find("sourceSet: '.*src/test/java'")
+        capturedOutput.find("sourceSetPath: '.*src/main/java'")
+        capturedOutput.find("sourceSetPath: '.*src/test/java'")
     }
 
     def "can generate empty test case"() {

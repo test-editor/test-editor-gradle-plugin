@@ -2,15 +2,21 @@ package org.testeditor.gradle.plugin
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.Project
 
 class SourceSetPathsTask extends DefaultTask {
+
+    public SourceSetPathsTask() {
+        super()
+        outputs.upToDateWhen { false }
+    }
+
     @TaskAction
-    def sourceSetPaths() {
+    def void sourceSetPaths() {
         project.sourceSets.each({
             it.allJava.getSourceDirectories().each({
-                println("sourceSetPath: '" + it.getPath() + "'")
+                println("sourceSetPath: '$it.path'")
             })
         })
     }
+
 }

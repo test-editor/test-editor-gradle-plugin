@@ -8,8 +8,9 @@ class TesteditorPluginExtension {
     static final String NAME = "testeditor"
 
     /** The version of the languages to use. */
-    def String version = "1.2.0" // TODO we don't want a default value
+    def String version
 
-    def String xtextVersion = "2.10.0"
+    /** The Xtext version to use. If not set the defaults are used. */
+    def String xtextVersion
 
 }

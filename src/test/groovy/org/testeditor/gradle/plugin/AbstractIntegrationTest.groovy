@@ -7,6 +7,8 @@ import nebula.test.IntegrationSpec
  */
 abstract class AbstractIntegrationTest extends IntegrationSpec {
 
+    String testEditorVersion = "1.5.0"
+
     def setup() {
         // TODO remove mavenLocal() below once the artifacts for aml, tcl, tsl are released
         buildFile << """
@@ -25,6 +27,10 @@ abstract class AbstractIntegrationTest extends IntegrationSpec {
 
             dependencies {
                 testCompile 'org.testeditor.fixture:core-fixture:3.1.0'
+            }
+
+            testeditor {
+                version '$testEditorVersion'
             }
         """.stripIndent()
     }

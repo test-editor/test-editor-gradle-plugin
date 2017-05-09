@@ -1,5 +1,6 @@
 package org.testeditor.gradle.plugin
 
+import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaBasePlugin
@@ -29,7 +30,9 @@ class TesteditorBasePlugin implements Plugin<Project> {
         configureXtextPlugin()
 
         project.afterEvaluate {
-            addDependencies()
+            def testeditorVersion = verifyTesteditorVersionIsSet()
+            configureXtextVersion(testeditorVersion)
+            addDependencies(testeditorVersion)
         }
 
         createSourceSetPathsTask(project)
@@ -43,7 +46,6 @@ class TesteditorBasePlugin implements Plugin<Project> {
 
     private def void configureXtextPlugin() {
         xtext.with {
-            version = config.xtextVersion
             languages {
                 aml {
                     setup = 'org.testeditor.aml.dsl.AmlStandaloneSetup'
@@ -51,50 +53,61 @@ class TesteditorBasePlugin implements Plugin<Project> {
                 tsl {
                     setup = 'org.testeditor.tsl.dsl.TslStandaloneSetup'
                 }
-
                 tcl {
                     fileExtension = 'tcl'
                     setup = 'org.testeditor.tcl.dsl.TclStandaloneSetup'
                     generator.outlet.producesJava = true
                 }
-
-                if (isVersionSmaller_1_2_0(config.version)) {
-                    // required prior to 1.2.0 - TML was unified with TCL in 1.2.0
-                    tml {
-                        setup = 'org.testeditor.tml.dsl.TmlStandaloneSetup'
-                    }
-                } else {
-                    // TODO this is quite ugly, need this until https://github.com/xtext/xtext-gradle-plugin/issues/71 is resolved
-                    tclMacro {
-                        fileExtension = 'tml'
-                        setup = 'org.testeditor.tcl.dsl.TclStandaloneSetup'
-                        generator.outlet.producesJava = true
-                    }
-                    tclConfig {
-                        fileExtension = 'config'
-                        setup = 'org.testeditor.tcl.dsl.TclStandaloneSetup'
-                        generator.outlet.producesJava = true
-                    }
+                // TODO this is quite ugly, need this until https://github.com/xtext/xtext-gradle-plugin/issues/71 is resolved
+                tclMacro {
+                    fileExtension = 'tml'
+                    setup = 'org.testeditor.tcl.dsl.TclStandaloneSetup'
+                    generator.outlet.producesJava = true
+                }
+                tclConfig {
+                    fileExtension = 'config'
+                    setup = 'org.testeditor.tcl.dsl.TclStandaloneSetup'
+                    generator.outlet.producesJava = true
                 }
             }
         }
     }
 
-    private def void addDependencies() {
-        def testEditorVersion = project.testeditor.version
+    private def String verifyTesteditorVersionIsSet() {
+        def testeditorVersion = project.testeditor.version
+        if (!testeditorVersion) {
+            throw new InvalidUserDataException("""
+                Test-editor version was not specified!
+
+                Add the following to your build script:
+                testeditor {
+                    version 'x.x.x'
+                }
+            """.stripIndent())
+        }
+        return testeditorVersion
+    }
+
+    // TODO it would be nicer to extract the Xtext version by analyzing the dependencies
+    private def void configureXtextVersion(String testEditorVersion) {
+        if (project.testeditor.xtextVersion) {
+            xtext.version = project.testeditor.xtextVersion
+        } else {
+            if (isVersionGreaterOrEquals_1_6_0(testEditorVersion)) {
+                xtext.version = "2.11.0"
+            } else {
+                xtext.version = "2.10.0"
+            }
+        }
+    }
+
+    private def void addDependencies(String testEditorVersion) {
         project.dependencies.with {
-            if (isVersionGreaterOrEquals_1_2_0(testEditorVersion)) {
-                // required since 1.2.0
-                add('xtextLanguages', "org.apache.commons:commons-lang3:3.4")
-                add('xtextLanguages', "org.gradle:gradle-tooling-api:2.14.1")
-                add('xtextLanguages', "org.testeditor:org.testeditor.dsl.common.model:$testEditorVersion")
-            }
-            if (isVersionSmaller_1_2_0(testEditorVersion)) {
-                // required prior to 1.2.0 - TML was unified with TCL in 1.2.0
-                add('xtextLanguages', "org.testeditor:org.testeditor.tml.model:$testEditorVersion")
-                add('xtextLanguages', "org.testeditor:org.testeditor.tml.dsl:$testEditorVersion")
-            }
-            // required for all versions
+            // required since 1.2.0
+            add('xtextLanguages', "org.apache.commons:commons-lang3:3.4")
+            add('xtextLanguages', "org.gradle:gradle-tooling-api:2.14.1")
+            add('xtextLanguages', "org.testeditor:org.testeditor.dsl.common.model:$testEditorVersion")
+
             add('xtextLanguages', "org.testeditor:org.testeditor.dsl.common:$testEditorVersion")
             add('xtextLanguages', "org.testeditor:org.testeditor.aml.model:$testEditorVersion")
             add('xtextLanguages', "org.testeditor:org.testeditor.aml.dsl:$testEditorVersion")
@@ -111,18 +124,11 @@ class TesteditorBasePlugin implements Plugin<Project> {
         }
     }
 
-    private def boolean isVersionGreaterOrEquals_1_2_0(String testEditorVersion) {
+    private def boolean isVersionGreaterOrEquals_1_6_0(String testEditorVersion) {
         String[] versionSplit = testEditorVersion.split("\\.")
         int major = Integer.parseInt(versionSplit[0])
         int minor = Integer.parseInt(versionSplit[1])
-        return (major == 1 && minor >= 2) || major > 1
-    }
-
-    private def boolean isVersionSmaller_1_2_0(String testEditorVersion) {
-        String[] versionSplit = testEditorVersion.split("\\.")
-        int major = Integer.parseInt(versionSplit[0])
-        int minor = Integer.parseInt(versionSplit[1])
-        return major == 1 && minor < 2
+        return (major == 1 && minor >= 6) || major > 1
     }
 
 }

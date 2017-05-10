@@ -17,10 +17,8 @@ A minimal `build.gradle` looks like this:
 		maven { url "http://dl.bintray.com/test-editor/test-editor-maven" }
 	}
 	
-The version of the test-editor can be configured as follows:
-
 	testeditor {
-	    version '1.2.0'
+	    version '1.5.0'
 	}
 	
 # Development

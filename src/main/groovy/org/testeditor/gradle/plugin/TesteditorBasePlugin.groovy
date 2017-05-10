@@ -105,7 +105,7 @@ class TesteditorBasePlugin implements Plugin<Project> {
         project.dependencies.with {
             if (isVersionGreaterOrEquals_1_6_0(testEditorVersion)) {
                 // required since 1.6.0
-                add('xtextLanguages', "com.google.code.gson:gson:2.7.0")
+                add('xtextLanguages', "com.google.code.gson:gson:2.7")
             }
             // required since 1.2.0
             add('xtextLanguages', "org.apache.commons:commons-lang3:3.4")

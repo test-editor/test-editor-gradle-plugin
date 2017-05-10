@@ -1,24 +1,8 @@
 package org.testeditor.gradle.plugin
-
-import spock.lang.Ignore
-
 /**
  * Integration tests for {@link TesteditorPlugin}.
  */
 class TesteditorPluginIntegrationTest extends AbstractIntegrationTest {
-
-    def "output of source set runs successfully"() {
-        given:
-        createTestCase()
-
-        when:
-        runTasksSuccessfully("sourceSetPaths")
-
-        then: "source sets or printed"
-        def capturedOutput = getStandardOutput()
-        capturedOutput.find("sourceSetPath: '.*src/main/java'")
-        capturedOutput.find("sourceSetPath: '.*src/test/java'")
-    }
 
     def "can generate empty test case"() {
         given:

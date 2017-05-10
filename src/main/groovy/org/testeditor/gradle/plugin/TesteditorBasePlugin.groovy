@@ -103,11 +103,15 @@ class TesteditorBasePlugin implements Plugin<Project> {
 
     private def void addDependencies(String testEditorVersion) {
         project.dependencies.with {
+            if (isVersionGreaterOrEquals_1_6_0(testEditorVersion)) {
+                // required since 1.6.0
+                add('xtextLanguages', "com.google.code.gson:gson:2.7.0")
+            }
             // required since 1.2.0
             add('xtextLanguages', "org.apache.commons:commons-lang3:3.4")
             add('xtextLanguages', "org.gradle:gradle-tooling-api:2.14.1")
             add('xtextLanguages', "org.testeditor:org.testeditor.dsl.common.model:$testEditorVersion")
-
+            // required for all versions
             add('xtextLanguages', "org.testeditor:org.testeditor.dsl.common:$testEditorVersion")
             add('xtextLanguages', "org.testeditor:org.testeditor.aml.model:$testEditorVersion")
             add('xtextLanguages', "org.testeditor:org.testeditor.aml.dsl:$testEditorVersion")

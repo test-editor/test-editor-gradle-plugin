@@ -23,7 +23,7 @@ class TesteditorPluginIntegrationTest extends AbstractIntegrationTest {
         runTasksSuccessfully("build")
 
         then: "assert class got compiled"
-        new File(projectDir, "build/classes/test/com/example/Example.class").exists()
+        new File(projectDir, "build/classes/java/test/com/example/Example.class").exists()
 
         and: "test got executed"
         def testResult = new File(projectDir, "build/test-results/test/TEST-com.example.Example.xml")

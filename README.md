@@ -9,7 +9,7 @@ The plugin is included in the [central plugin repository](https://plugins.gradle
 A minimal `build.gradle` looks like this:
 
 	plugins {
-		id 'org.testeditor.gradle-plugin' version '0.8'
+		id 'org.testeditor.gradle-plugin' version '0.9'
 	}
 	
 	repositories {
@@ -18,7 +18,7 @@ A minimal `build.gradle` looks like this:
 	}
 	
 	testeditor {
-	    version '1.5.0'
+	    languageVersion '2.0.5'
 	}
 	
 # Development

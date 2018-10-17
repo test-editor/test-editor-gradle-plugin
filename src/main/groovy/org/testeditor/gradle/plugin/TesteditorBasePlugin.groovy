@@ -30,9 +30,12 @@ class TesteditorBasePlugin implements Plugin<Project> {
         configureXtextPlugin()
 
         project.afterEvaluate {
-            def testeditorVersion = verifyTesteditorVersionIsSet()
-            configureXtextVersion(testeditorVersion)
-            addDependencies(testeditorVersion)
+            def testEditorLanguageVersion = verifyTestEditorLanguageVersionIsSet()
+            configureXtextVersion(testEditorLanguageVersion)
+            configureGsonVersion()
+            configureGradleToolingVersion()
+            configureCommonsLangVersion()
+            addDependencies(testEditorLanguageVersion)
         }
 
         createSourceSetPathsTask(project)
@@ -48,7 +51,9 @@ class TesteditorBasePlugin implements Plugin<Project> {
         xtext.with {
             languages {
                 aml {
+                    fileExtension = 'aml'
                     setup = 'org.testeditor.aml.dsl.AmlStandaloneSetup'
+                    generator.outlet.producesJava = true
                 }
                 tsl {
                     setup = 'org.testeditor.tsl.dsl.TslStandaloneSetup'
@@ -73,52 +78,64 @@ class TesteditorBasePlugin implements Plugin<Project> {
         }
     }
 
-    private def String verifyTesteditorVersionIsSet() {
-        def testeditorVersion = project.testeditor.version
-        if (!testeditorVersion) {
+    private def String verifyTestEditorLanguageVersionIsSet() {
+        def testEditorLanguageVersion = project.testeditor.languageVersion
+        if (!testEditorLanguageVersion) {
             throw new InvalidUserDataException("""
-                Test-editor version was not specified!
+                Test-editor language version was not specified!
 
                 Add the following to your build script:
                 testeditor {
-                    version 'x.x.x'
+                    languageVersion 'x.x.x'
                 }
             """.stripIndent())
         }
-        return testeditorVersion
+        return testEditorLanguageVersion
     }
 
-    // TODO it would be nicer to extract the Xtext version by analyzing the dependencies
-    private def void configureXtextVersion(String testEditorVersion) {
+    // TODO it would be nicer to extract the Xtext languageVersion by analyzing the dependencies
+    private def void configureXtextVersion(String testEditorLanguageVersion) {
         if (project.testeditor.xtextVersion) {
             xtext.version = project.testeditor.xtextVersion
         } else {
-            if (isVersionGreaterOrEquals_1_6_0(testEditorVersion)) {
-                xtext.version = "2.11.0"
-            } else {
-                xtext.version = "2.10.0"
-            }
+            xtext.version = "2.15.0"
         }
     }
 
-    private def void addDependencies(String testEditorVersion) {
+    private def void configureGsonVersion() {
+        if (!project.testeditor.gsonVersion) {
+            project.testeditor.gsonVersion = "2.8.5"
+        }
+    }
+
+    private def void configureGradleToolingVersion() {
+        if (!project.testeditor.gradleToolingVersion) {
+            project.testeditor.gradleToolingVersion = "4.3"
+        }
+    }
+
+    private def void configureCommonsLangVersion() {
+        if (!project.testeditor.commonsLangVersion) {
+            project.testeditor.commonsLangVersion = "3.4"
+        }
+    }
+
+    private def void addDependencies(String testEditorLanguageVersion) {
         project.dependencies.with {
-            if (isVersionGreaterOrEquals_1_6_0(testEditorVersion)) {
-                // required since 1.6.0
-                add('xtextLanguages', "com.google.code.gson:gson:2.7")
-            }
+            // required since 1.6.0
+            add('xtextLanguages', "com.google.code.gson:gson:${this.project.testeditor.gsonVersion}")
             // required since 1.2.0
-            add('xtextLanguages', "org.apache.commons:commons-lang3:3.4")
-            add('xtextLanguages', "org.gradle:gradle-tooling-api:2.14.1")
-            add('xtextLanguages', "org.testeditor:org.testeditor.dsl.common.model:$testEditorVersion")
+            add('xtextLanguages', "org.apache.commons:commons-lang3:${this.project.testeditor.commonsLangVersion}")
+            add('xtextLanguages', "org.gradle:gradle-tooling-api:${this.project.testeditor.gradleToolingVersion}")
+            add('xtextLanguages', "org.testeditor:org.testeditor.dsl.common.model:$testEditorLanguageVersion")
             // required for all versions
-            add('xtextLanguages', "org.testeditor:org.testeditor.dsl.common:$testEditorVersion")
-            add('xtextLanguages', "org.testeditor:org.testeditor.aml.model:$testEditorVersion")
-            add('xtextLanguages', "org.testeditor:org.testeditor.aml.dsl:$testEditorVersion")
-            add('xtextLanguages', "org.testeditor:org.testeditor.tsl.model:$testEditorVersion")
-            add('xtextLanguages', "org.testeditor:org.testeditor.tsl.dsl:$testEditorVersion")
-            add('xtextLanguages', "org.testeditor:org.testeditor.tcl.model:$testEditorVersion")
-            add('xtextLanguages', "org.testeditor:org.testeditor.tcl.dsl:$testEditorVersion")
+            add('xtextLanguages', "org.testeditor:org.testeditor.dsl.common:$testEditorLanguageVersion")
+            add('xtextLanguages', "org.testeditor:org.testeditor.aml.model:$testEditorLanguageVersion")
+            add('xtextLanguages', "org.testeditor:org.testeditor.aml.dsl:$testEditorLanguageVersion")
+            add('xtextLanguages', "org.testeditor:org.testeditor.tsl.model:$testEditorLanguageVersion")
+            add('xtextLanguages', "org.testeditor:org.testeditor.tsl.dsl:$testEditorLanguageVersion")
+            add('xtextLanguages', "org.testeditor:org.testeditor.tcl.model:$testEditorLanguageVersion")
+            add('xtextLanguages', "org.testeditor:org.testeditor.tcl.dsl:$testEditorLanguageVersion")
 
             // TODO we use xtend.core for its JDT dependencies only
             add('xtextLanguages', "org.eclipse.xtend:org.eclipse.xtend.core:${xtext.version}")
@@ -126,13 +143,6 @@ class TesteditorBasePlugin implements Plugin<Project> {
             // TODO check if we can already resolve org.junit.*
             add('testCompile', 'junit:junit:4.12')
         }
-    }
-
-    private def boolean isVersionGreaterOrEquals_1_6_0(String testEditorVersion) {
-        String[] versionSplit = testEditorVersion.split("\\.")
-        int major = Integer.parseInt(versionSplit[0])
-        int minor = Integer.parseInt(versionSplit[1])
-        return (major == 1 && minor >= 6) || major > 1
     }
 
 }

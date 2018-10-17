@@ -15,7 +15,7 @@ class TesteditorPluginSpec extends PluginProjectSpec {
 
     private def void applyWithTesteditorVersion(String version) {
         project.apply plugin: pluginName
-        project.testeditor.version = version
+        project.testeditor.languageVersion = version
     }
 
     def "proper message is thrown if test editor version was not set"() {
@@ -30,31 +30,20 @@ class TesteditorPluginSpec extends PluginProjectSpec {
         ex.cause instanceof InvalidUserDataException
     }
 
-    def "Xtext 2.10.0 is used with test-editor 1.5.0"() {
+    def "Xtext 2.15.0 (default) is used with test-editor 2.0.5"() {
         given:
-        applyWithTesteditorVersion("1.5.0")
+        applyWithTesteditorVersion("2.0.5")
 
         when:
         project.evaluate()
 
         then:
-        project.xtext.version == "2.10.0"
-    }
-
-    def "Xtext 2.11.0 is used with test-editor 1.6.0"() {
-        given:
-        applyWithTesteditorVersion("1.6.0")
-
-        when:
-        project.evaluate()
-
-        then:
-        project.xtext.version == "2.11.0"
+        project.xtext.version == "2.15.0"
     }
 
     def "custom xtextVersion has precedence"() {
         given:
-        applyWithTesteditorVersion("1.6.0")
+        applyWithTesteditorVersion("1.13.0")
         project.testeditor.xtextVersion = "custom"
 
         when:

@@ -5,6 +5,11 @@ cache:
   - "$HOME/nix.store"
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
+env:
+  global: 
+    - # GRADLE PLUGINS Environment variables for deployment
+    - secure: "v7934A0MLh0dNZ54gSiLiNdGJWQYGrW8KpRHOeV7qMnM1SXtqyPCWvCCBtbJ6p04VMvj+eefFZulx0DG+kgkuaKTHmmZPM/7FJNKJwIBFKP7DHTGgmvX5J3q35VLrnskOyeAeg6cFEOOgZl5JEHjJMs6K/o6UnWR98mTSDIZfrlAF2UC4cgsTdJYmoxKHze0kjCE4AoOtzuBpBXltiLgS9SOLrohgPI/ocVQfvWnxrNQLylVrYuPGnp1c/de3rx+zpzQFEIMOR6W7NbqFXuf65fLpIYi1FaL7oC1RYql1/FnGDSKr8ePrzkmjFQ5jXEHOsJ36rBGZ1jDYNBpVnmMCE0BXQ+YxFtt4owLazxaA2lRHLW35dMajUDVlZyrOOgOblAj7SHJ5anLp7FtVFu89qAkfLqeUs/hEhfp2EJHxsCyH/hY4BSkPns4FtGOm4sXvuMQzVf5qRbMGdpFFMNrayY+8cfJtZdZlh3iLmtd8dtbZbGgN5sFKm09mQG9sbFlqXp+Pj0YCmVs9OdL/J59l7Sx/uCv/zfcB5gYagAwlrSCtC9OzDBquW3S9iXt0YOE6vHVcoI41i8tHH47xWwiJ51NHOoSOyemNLTlDwgLy8LNNPtukFIlTOq/QgCK0T5UYoCPNxkAXzP3BUCWI3zWG0JcauPHrDarOdkrA9NZ4Ps="
+    - secure: "xz87k8UU2vT0FSLqF6ybdeWMv0pXp8tnZL1+UjYDooNwv0QAp+gWMHrDeEZsyBcAv47xJP6IHbjZfEMAOxstMeaBfGGM4WJbcz4rYc+7WnrgA2rav/8+LQ4S8FK//uR7Uffj5zmQmJEQ6pwqz/Rne57jUEheCKl9sd/p+90F/GYs4bTDULFlyx45Ocq0eslCecxMy6AsUe9QSdFKTK+MwZiUgpwBeKfFJF0Zao9++xge81G6KabaJtdZ0AsUmrb57q9R4sccMgYQq6BUveKCDtgkB7u2Dh81n2ZZh4MkYgz3R2ILSjJ2BHK/Di+M5SxXEZ49Xg3p/CpibkLbizSRg0Nf9paAd96SJzaEajkOpC5bb7cEAR3mt3tGu0xUbWa1nltWictfCA8oXmsyjcqizlCzvZfeUJp2VLEAIHW8gEQ9qf92nw8D9IfPW4rUrYgwrJdxpyVamwVA98+nCBPIyCY82FZcrnkfxR05wlI+cXzuT/12ZkWO0yPtDYi1PBkgd0OQZtFRB6FjHLi2rwA7+Hg2F9mTa+BNKc1lN7gCjlDCaAnt9KmSrIFfKUf/ck0oMKLP56GTR7sduSxtcIIonap+lSu2qvNBSqMAF7rC0gH4nkMDagiUWvOx0cAL9Vl+t/1QL3/ttF8WGoGjOZaNZ2FburFrKNxDYKOj6LyUGzQ="
 before_install:
 - sudo mkdir -p /etc/nix
 - echo "substituters = https://cache.nixos.org/ file://$HOME/nix.store" | sudo tee -a /etc/nix/nix.conf > /dev/null

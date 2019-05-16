@@ -53,14 +53,14 @@ class TesteditorPluginIntegrationTest extends AbstractIntegrationTest {
         then:
         def generatedFile = getGeneratedFile("Example")
         generatedFile.exists()
-        generatedFile.text.contains("macro_MyMacroCollection_SampleMacro();")
+        generatedFile.text.contains("macro_MyMacroCollection_SampleMacro(IDvar2);")
     }
 
     def "can generate test case with configuration"() {
         given:
         createTestConfiguration()
         createTestCase("""
-            config MyConfig
+            use config MyConfig
         """)
 
         when:

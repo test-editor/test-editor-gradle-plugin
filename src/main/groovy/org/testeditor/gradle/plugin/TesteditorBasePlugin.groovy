@@ -74,6 +74,12 @@ class TesteditorBasePlugin implements Plugin<Project> {
                     setup = 'org.testeditor.tcl.dsl.TclStandaloneSetup'
                     generator.outlet.producesJava = true
                 }
+				// same as config, just with an alternative file ending ("test frame")
+				tclConfig2 {
+					fileExtension = 'tfr'
+					setup = 'org.testeditor.tcl.dsl.TclStandaloneSetup'
+					generator.outlet.producesJava = true
+				}
             }
         }
     }

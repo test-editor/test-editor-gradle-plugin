@@ -71,6 +71,22 @@ class TesteditorPluginIntegrationTest extends AbstractIntegrationTest {
         generatedFile.exists()
         generatedFile.text.contains("public class Example extends MyConfig {")
     }
+    
+    def "can generate test case with testframe"() {
+        given:
+        createTestframe()
+        createTestCase("""
+            use config MyConfig
+        """)
+
+        when:
+        runTasksSuccessfully("generateTestXtext")
+
+        then:
+        def generatedFile = getGeneratedFile("Example")
+        generatedFile.exists()
+        generatedFile.text.contains("public class Example extends MyConfig {")
+    }
 
     def "gradle clean removes generated artifact"() {
         given:
@@ -113,6 +129,17 @@ class TesteditorPluginIntegrationTest extends AbstractIntegrationTest {
 
     private void createTestConfiguration(String contents = "") {
         def file = createFile("src/test/java/com/example/MyConfig.config")
+        file << """
+            package com.example
+
+            config MyConfig
+
+            $contents
+        """.stripIndent()
+    }
+    
+    private void createTestframe(String contents = "") {
+        def file = createFile("src/test/java/com/example/MyConfig.tfr")
         file << """
             package com.example
 

@@ -1,11 +1,17 @@
 plugins {
-    id 'com.gradle.plugin-publish' version '0.10.0'
-    id 'net.researchgate.release' version '2.4.0'
+// These 2 plugins were meant to deploy on Gradle Plugin Site
+//    id 'com.gradle.plugin-publish' version '0.10.0'
+//    id 'net.researchgate.release' version '2.4.0'
+// The following 2 plugins are for deployment on Bintray  
+    id 'net.researchgate.release' version '2.7.0'
+    id 'com.jfrog.bintray' version '1.8.4'
     id 'java-gradle-plugin'
     id 'groovy'
     id 'maven'
     id 'jacoco'
 }
+
+apply from: "${rootDir}/gradle/publishing.gradle"
 
 group 'org.testeditor'
 
@@ -57,7 +63,7 @@ release {
     newVersionCommitMessage = '[release] new version commit: '
     tagTemplate = 'v${version}'
 }
-
+/*  This bundle is for deployment on Gradle Plugin Site
 pluginBundle {
     website = 'https://github.com/test-editor/test-editor-gradle-plugin'
     vcsUrl = 'https://github.com/test-editor/test-editor-gradle-plugin'
@@ -76,6 +82,7 @@ pluginBundle {
         artifactId = 'gradle-plugin'
     }
 }
+*/
 
 task updateReadmeVersion << {
     def versionPattern = /\d+.\d+(.\d+)?/
